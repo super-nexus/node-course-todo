@@ -69,7 +69,7 @@ app.delete('/todos/:id', (req, res) => {
     if(!todo){
       return res.status(404).send();
     }
-    console.log('Removed: ', todo);
+    // console.log('Removed: ', todo);
 
     res.send({todo});
   }).catch((err) => {
@@ -96,7 +96,7 @@ app.patch('/todos/:id', (req, res) => {
   }
 
   Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
-    
+
     if(!todo){
       return res.status(404).send();
     }
