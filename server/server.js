@@ -3,6 +3,7 @@ const config = require('./config/config');
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 
 const {ObjectID} = require('mongodb');
 const express = require('express');
@@ -113,15 +114,12 @@ app.patch('/todos/:id', (req, res) => {
 
 app.post('/users', (req, res) => {
 
-  console.log('POST /users');
-
   var user = new User(_.pick(req.body, ['email', 'password']));
-  console.log(user);
 
   user.save().then((user) => {
     return user.generateAuthToken();
   }).then((token) => {
-    console.log('User ', user);
+
     res.header('x-auth', token).send(user);
   }).catch((err) => {
     console.log(err);
@@ -129,6 +127,10 @@ app.post('/users', (req, res) => {
   })
 });
 
+
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
+})
 
 app.listen(port, () => {
   console.log(`Started on port ${port}`);
